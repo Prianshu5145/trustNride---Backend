@@ -1,15 +1,10 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+require('dotenv').config(); // Load environment variables from .env file
 
-dotenv.config(); // Load environment variables from .env file
-//mongodb+srv://agraharipriyanshu52:hV1owk0gc7kXeY5S@cluster0.nu0kl.mongodb.net/
-//mongoimport --uri "mongodb+srv://agraharipriyanshu52:hV1owk0gc7kXeY5S@cluster0.mongodb.net/test" --collection biddinglistings --file "C:\Users\agrah\OneDrive\Desktop\trustnride1.biddinglistings.json" --jsonArray
-
-const mongoUri = "mongodb+srv://agraharipriyanshu52:hV1owk0gc7kXeY5S@cluster0.nu0kl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 const connectDB = async () => {
   try {
     // Connect to MongoDB using the connection string from .env
-    const conn = await mongoose.connect(mongoUri, {
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
