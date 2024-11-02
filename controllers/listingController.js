@@ -1,24 +1,20 @@
 const Listing = require('../models/Listing');
 const cloudinary = require('../utils/cloudinary');
+const sharp = require('sharp'); // For image compression
+const ffmpeg = require('fluent-ffmpeg'); // For video compression
+const ffmpegPath = require('ffmpeg-static'); // Path to the FFmpeg binary
+const path = require('path');
 
-// Middleware to check if the user is an approved dealer
+// Set the path for FFmpeg
+ffmpeg.setFfmpegPath(ffmpegPath);
 
-
-// Create a new listing (only approved sellers can create listings)
-
-// Middleware to check if the user is an approved dealer (this should be implemented separately)
-
-// Create a new listing (only approved sellers can create listings)
-
-
+// Your controller code continues here...
 
 // Create a new listing (only approved sellers can create listings)
 exports.createListing = async (req, res) => {
   console.log("Files:", req.files);  // Log the files
   console.log("Body:", req.body);
-  const { title, description, price,  FairMarketValue,KM,
-    
-  overview, inspectionReport ,InspectionReportVideoLink} = req.body;
+  const { title, description, price, FairMarketValue, KM, overview, inspectionReport, InspectionReportVideoLink } = req.body;
 
   // Check if 'images' field exists in req.files
   if (!req.files || !req.files.images) {
@@ -38,36 +34,63 @@ exports.createListing = async (req, res) => {
         throw new Error("Failed to upload to Cloudinary");
       }
     };
-    
+
+    // Function to compress an image
+    const compressImage = async (filePath) => {
+      const outputPath = `${filePath}-compressed.jpg`;
+      await sharp(filePath)
+        .resize(800) // Resize to a width of 800px, maintain aspect ratio
+        .jpeg({ quality: 20
+
+
+         }) // Compress to 70% quality
+        .toFile(outputPath);
+      return outputPath;
+    };
+
+    // Function to compress a video
+    const compressVideo = (filePath) => {
+      const outputPath = path.join('uploads', `${Date.now()}-compressed.mp4`);
+      return new Promise((resolve, reject) => {
+        ffmpeg(filePath)
+          .output(outputPath)
+          .videoCodec('libx264')
+          .size('640x?') // Resize to a width of 640px
+          .on('end', () => resolve(outputPath))
+          .on('error', reject)
+          .run();
+      });
+    };
 
     // Upload general listing images
-    const imageUploads = await Promise.all(req.files.images.map(file => uploadToCloudinary(file.path)));
+    const imageUploads = await Promise.all(
+      req.files.images.map(async (file) => {
+        const compressedImagePath = await compressImage(file.path);
+        return uploadToCloudinary(compressedImagePath);
+      })
+    );
 
     // Upload inspection report images and videos (checking for existence)
-    const lhsTyreImage = req.files['inspectionReport[exterior][lhsTyre][image]'] ? 
-      await uploadToCloudinary(req.files['inspectionReport[exterior][lhsTyre][image]'][0].path) : null;
-      console.log(lhsTyreImage);
-    const rhsTyreImage = req.files['inspectionReport[exterior][rhsTyre][image]'] ? 
-      await uploadToCloudinary(req.files['inspectionReport[exterior][rhsTyre][image]'][0].path) : null;
-      console.log(rhsTyreImage);
-    const lhsRearTyreImage = req.files['inspectionReport[exterior][lhsRearTyre][image]'] ? 
-      await uploadToCloudinary(req.files['inspectionReport[exterior][lhsRearTyre][image]'][0].path) : null;
-      console.log(lhsRearTyreImage);
-    const rhsRearTyreImage = req.files['inspectionReport[exterior][rhsRearTyre][image]'] ? 
-      await uploadToCloudinary(req.files['inspectionReport[exterior][rhsRearTyre][image]'][0].path) : null;
-      console.log(rhsRearTyreImage);
-
+    const lhsTyreImage = req.files['inspectionReport[exterior][lhsTyre][image]'] ?
+      await uploadToCloudinary(await compressImage(req.files['inspectionReport[exterior][lhsTyre][image]'][0].path)) : null;
       
-    const spareTyreImage = req.files['inspectionReport[exterior][spareTyre][image]'] ? 
-   
-      await uploadToCloudinary(req.files['inspectionReport[exterior][spareTyre][image]'][0].path) : null;
-      console.log(spareTyreImage);
-      const filePath = req.files['inspectionReport[engine][video]'][0].path;
-console.log("Video file path:", filePath);
-    const engineVideo = req.files['inspectionReport[engine][video]'] ? 
-      await uploadToCloudinary(req.files['inspectionReport[engine][video]'][0].path,"video") : null;
-      console.log(engineVideo);
+    const rhsTyreImage = req.files['inspectionReport[exterior][rhsTyre][image]'] ?
+      await uploadToCloudinary(await compressImage(req.files['inspectionReport[exterior][rhsTyre][image]'][0].path)) : null;
 
+    const lhsRearTyreImage = req.files['inspectionReport[exterior][lhsRearTyre][image]'] ?
+      await uploadToCloudinary(await compressImage(req.files['inspectionReport[exterior][lhsRearTyre][image]'][0].path)) : null;
+
+    const rhsRearTyreImage = req.files['inspectionReport[exterior][rhsRearTyre][image]'] ?
+      await uploadToCloudinary(await compressImage(req.files['inspectionReport[exterior][rhsRearTyre][image]'][0].path)) : null;
+
+    const spareTyreImage = req.files['inspectionReport[exterior][spareTyre][image]'] ?
+      await uploadToCloudinary(await compressImage(req.files['inspectionReport[exterior][spareTyre][image]'][0].path)) : null;
+
+    const videoPath = req.files['inspectionReport[engine][video]'] ? req.files['inspectionReport[engine][video]'][0].path : null;
+    const engineVideo = videoPath ? await uploadToCloudinary(await compressVideo(videoPath), "video") : null;
+
+    // Create the listing with full details including overview and inspection report
+   
     // Create the listing with full details including overview and inspection report
     const listing = await Listing.create({
       title,

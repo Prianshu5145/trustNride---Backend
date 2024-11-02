@@ -5,7 +5,7 @@ const listingSchema = new mongoose.Schema(
     title: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
-    images: { type: [String], required: true },
+    images: { type: [String], required: false },
     FairMarketValue: { type: String, required: true },
     KM: { type: String, required: true },
     
@@ -56,7 +56,7 @@ const listingSchema = new mongoose.Schema(
         blowBy: { type: String, enum: ['Yes', 'No'], required: true },
         backCompression: { type: String, enum: ['Yes', 'No'], required: true },
         engineMounting: { type: String, enum: ['Yes', 'No'], required: true },
-        video: { type: String, required: true }
+        video: { type: String, required: false }
       },
       ac: {
         acWorking: { type: String, enum: ['Working', 'Not Working'], required: true },
