@@ -2,21 +2,23 @@ const nodemailer = require('nodemailer');
 require('dotenv').config(); // Load environment variables from .env
 
 const sendEmail = async (options) => {
-  // Create a transporter object using Gmail (or another email provider)
+  // Create a transporter object using GoDaddy SMTP
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtpout.secureserver.net', // GoDaddy SMTP server
+    port: 465, // or 587
+    secure: true, // true for port 465, false for port 587
     auth: {
-      user: process.env.EMAIL_USER, // Email from .env
+      user: process.env.EMAIL_USER, // Email from .env (your GoDaddy email)
       pass: process.env.EMAIL_PASS, // Email password from .env
     },
   });
 
   // Email options
   const mailOptions = {
-    from: "TRUSTNRIDE",        // Sender address
-    to: options.email,         // Recipient(s)
+    from: "TRUSTNRIDE <team@trustnride.in>",  // Sender address
+    to: options.email,  // Recipient(s)
     subject: options.subject,  // Subject line
-    text: options.message,     // Plain text body
+    text: options.message,  // Plain text body
   };
 
   // Send email
