@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer'); // For handling multipart/form-data
 const {
   createListing,
-  
+  AllListings,
   getSellerListings,
   updateListing,
   deleteListing,
@@ -28,6 +28,7 @@ router.post('/create', upload.fields([
 // Get all listings (accessible to buyers)
 //router.get('/userlistings', getAllListings);
 router.get('/alllisting', getAllListings);
+router.get('/Carlisting', AllListings);
 // Get seller's own listings
 router.get('/seller',isAuthenticated,checkUserRole(['dealer']) ,getSellerListings);
 
