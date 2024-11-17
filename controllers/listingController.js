@@ -179,12 +179,31 @@ exports.createListing = async (req, res) => {
 //
 exports.getAllListings = async (req, res) => {
   try {
-      const listings = await Listing.find(); // Fetch all listings from the database
+      // Fetch all listings with specific fields, including nested fields from overview
+      const listings = await Listing.find().select(
+        'title description price images FairMarketValue KM overview.rto overview.kmsDriven overview.fuelType '
+      );
+      
       res.status(200).json(listings);
   } catch (error) {
       res.status(500).json({ message: 'Error fetching listings', error });
   }
 };
+exports.AllListings = async (req, res) => {
+  try {
+      // Fetch 15 listings with specific fields, including nested fields from overview
+      const listings = await Listing.find()
+        .select('title price images FairMarketValue overview.rto overview.kmsDriven overview.fuelType')
+        .limit(15); // Limit the number of documents to 15
+      
+      res.status(200).json(listings);
+  } catch (error) {
+      res.status(500).json({ message: 'Error fetching listings', error });
+  }
+};
+
+
+
 //
 exports.getListingById = async (req, res) => {
   const { id } = req.params; // Extract ID from request parameters
