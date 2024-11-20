@@ -4,7 +4,7 @@ const sharp = require('sharp'); // For image compression
 const ffmpeg = require('fluent-ffmpeg'); // For video compression
 const ffmpegPath = require('ffmpeg-static'); // Path to the FFmpeg binary
 const path = require('path');
-
+const Product = require('../models/assgn');
 // Set the path for FFmpeg
 ffmpeg.setFfmpegPath(ffmpegPath);
 
@@ -202,9 +202,36 @@ exports.AllListings = async (req, res) => {
   }
 };
 
+exports.getallassgnlisting = async (req, res) => {
+  try {
+    const products = await Product.find(); // Fetch all products
+    res.status(200).json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    console.error('Error fetching listings:', error.message);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch product listings.',
+    });
+  }
+};
+exports.getassgnListingById = async (req, res) => {
+  const { id } = req.params; // Extract ID from request parameters
 
+  try {
+      const listing = await Product.findById(id); // Find the listing by ID
+      if (!listing) {
+          return res.status(404).json({ message: 'Listing not found' });
+      }
+      res.status(200).json(listing); // Send the listing data as a response
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' }); // Handle server errors
+  }
+};
 
-//
 exports.getListingById = async (req, res) => {
   const { id } = req.params; // Extract ID from request parameters
 
