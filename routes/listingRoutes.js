@@ -10,8 +10,9 @@ const {
 const { checkApprovedDealer ,checkUserRole} = require('../middlewares/listingMiddlewares');
 const {isAuthenticated}=require('../middlewares/authMiddleware');
 const router = express.Router();
-const {getAllListings,getListingById,} = require('../controllers/listingController');
+const {getAllListings,getListingById,getallassgnlisting,getassgnListingById} = require('../controllers/listingController');
 // Set up multer for file uploads
+
 const upload = multer({ dest: 'uploads/' }); // Ensure this path exists
 console.log(upload);
 // Create a new listing (only approved sellers can create listings)
@@ -39,5 +40,8 @@ router.patch('/update/:id', isAuthenticated,checkUserRole(['dealer','admin']),up
 router.delete('/delete/:id',isAuthenticated,checkUserRole(['dealer', 'admin']), deleteListing);
 //
 router.get('/find/:id', getListingById);
+router.get('/assgnfind/:id', getassgnListingById);
+
+router.get('/assgnlistings',getallassgnlisting);
 
 module.exports = router;
