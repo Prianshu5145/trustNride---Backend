@@ -8,6 +8,7 @@ const biddingRoutes = require('./routes/bidding');
 const bookingRoute = require('./routes/Inspection');
 const reviewRoutes = require('./routes/reviewRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const rtoRoutes = require("./routes/rtoroutes");
 dotenv.config(); // Load environment variables
 
 // Initialize express app
@@ -26,6 +27,7 @@ app.use('/api/bidding', biddingRoutes);
 app.use('/api/inspection', bookingRoute);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/contact', contactRoutes);
+app.use("/api/rto", rtoRoutes);
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

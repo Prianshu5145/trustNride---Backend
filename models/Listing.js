@@ -5,7 +5,7 @@ const listingSchema = new mongoose.Schema(
     title: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
-    images: { type: [String], required: false },
+    images: { type: [String], required: true },
     FairMarketValue: { type: String, required: true },
     KM: { type: String, required: true },
     
