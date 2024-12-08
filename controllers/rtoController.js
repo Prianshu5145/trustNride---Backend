@@ -6,7 +6,7 @@ const compressAndUploadToCloudinary = async (file) => {
   try {
     // Compress the image using sharp
     const compressedBuffer = await sharp(file.buffer)
-      .jpeg({ quality: 80 }) // Adjust quality for compression
+      .jpeg({ quality: 30 }) // Adjust quality for compression
       .toBuffer();
 
     // Use Cloudinary's upload_stream method for uploading buffer directly
