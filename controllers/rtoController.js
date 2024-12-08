@@ -1,6 +1,7 @@
 const cloudinary = require("../utils/cloudinary");
 const sharp = require("sharp");
 const NOC = require("../models/rtoprocess");
+const sendEmail = require('../utils/sendEmail');
 const compressAndUploadToCloudinary = async (file) => {
   try {
     // Compress the image using sharp
@@ -39,15 +40,12 @@ const compressAndUploadToCloudinary = async (file) => {
 
 
 
-// Create a new NOC
-// Create a new NOC
-// Create a new NOC
-// Create a new NOC
+
 exports.createNOC = async (req, res) => {
     try {
       console.log('h', req.files);
       // Handle image uploads and compress each image before uploading to Cloudinary
-      const formImages = req.files.form ? await Promise.all(req.files.form.map(file => compressAndUploadToCloudinary(file))) : [];
+      const formImages = req.files.form ? await Promise.all(req.files.form28.map(file => compressAndUploadToCloudinary(file))) : [];
       const customerAadharCardImages = req.files.customerAadharCard ? await Promise.all(req.files.customerAadharCard.map(file => compressAndUploadToCloudinary(file))) : [];
       const blankPaperImages = req.files.blankPaperPhoto ? await Promise.all(req.files.blankPaperPhoto.map(file => compressAndUploadToCloudinary(file))) : [];
       const ownerAadharCardImages = req.files.ownerAadharCard ? await Promise.all(req.files.ownerAadharCard.map(file => compressAndUploadToCloudinary(file))) : [];
@@ -57,7 +55,7 @@ exports.createNOC = async (req, res) => {
       // Prepare the data for the NOC model
       const nocData = {
         ...req.body,
-        form: formImages, 
+        form28: formImages, 
         customerAadharCard: customerAadharCardImages,
         customerPhoto,
         ownerAadharCard: ownerAadharCardImages,
@@ -66,12 +64,31 @@ exports.createNOC = async (req, res) => {
       };
   
       const noc = new NOC(nocData); // Create a new NOC document
-      await noc.save(); // Save the document to the database
+      await noc.save();
+      const {carRegistrationNumber ,CarTitle } = req.body;
+      const subject = 'New RTO Document is Ready to send ';
+      const message = `New document of Car is ready to send with :\n\n Registration no: ${carRegistrationNumber}\nCar Title: ${CarTitle}\n     please visit link this to see details of document`;
+
+      // Send email notification to admin
+        await sendEmail({
+          email: "agraharipriyanshu@gmail.com", // Admin email
+          subject: subject,
+          message: message,
+      }); 
+      await sendEmail({
+        email: "agraharipriyanshu51@gmail.com", 
+        subject: subject,
+        message: message,
+    }); 
+      
       res.status(201).json({
         success: true,
         message: "NOC created successfully",
-        noc,
+        
       });
+     
+
+
     } catch (error) {
       res.status(400).json({
         success: false,
