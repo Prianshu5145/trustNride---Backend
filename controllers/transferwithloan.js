@@ -1,6 +1,6 @@
 const cloudinary = require("../utils/cloudinary");
 const sharp = require("sharp");
-const NOC = require("../models/rtoprocess");
+const TRANSFERWITHLOAN = require("../models/rtotransferwithloan");
 const sendEmail = require('../utils/sendEmail');
 const compressAndUploadToCloudinary = async (file) => {
   try {
@@ -41,11 +41,16 @@ const compressAndUploadToCloudinary = async (file) => {
 
 
 
-exports.createNOC = async (req, res) => {
+exports.createTRANSFERWITHLOAN = async (req, res) => {
+   
     try {
-      console.log('h', req.files);
+      
       // Handle image uploads and compress each image before uploading to Cloudinary
-      const formImages = req.files.form28 ? await Promise.all(req.files.form28.map(file => compressAndUploadToCloudinary(file))) : [];
+      const formImages28 = req.files.form28 ? await Promise.all(req.files.form28.map(file => compressAndUploadToCloudinary(file))) : [];
+      console.log('h', req.file );
+      const formImages29 = req.files.form29 ? await Promise.all(req.files.form29.map(file => compressAndUploadToCloudinary(file))) : [];
+      const formImages30 = req.files.form30 ? await Promise.all(req.files.form30.map(file => compressAndUploadToCloudinary(file))) : [];
+      const formImages34 = req.files.form34 ? await Promise.all(req.files.form34.map(file => compressAndUploadToCloudinary(file))) : [];
       const customerAadharCardImages = req.files.customerAadharCard ? await Promise.all(req.files.customerAadharCard.map(file => compressAndUploadToCloudinary(file))) : [];
       const blankPaperImages = req.files.blankPaperPhoto ? await Promise.all(req.files.blankPaperPhoto.map(file => compressAndUploadToCloudinary(file))) : [];
       const ownerAadharCardImages = req.files.ownerAadharCard ? await Promise.all(req.files.ownerAadharCard.map(file => compressAndUploadToCloudinary(file))) : [];
@@ -53,9 +58,13 @@ exports.createNOC = async (req, res) => {
       const customerPhoto = req.files.customerPhoto ? await compressAndUploadToCloudinary(req.files.customerPhoto[0]) : null;
   
       // Prepare the data for the NOC model
-      const nocData = {
+      const TRANSFERWITHLOANDATA = {
         ...req.body,
-        form28: formImages, 
+        form28: formImages28, 
+        form29: formImages29, 
+        form30: formImages30, 
+        form34: formImages34, 
+
         customerAadharCard: customerAadharCardImages,
         customerPhoto,
         ownerAadharCard: ownerAadharCardImages,
@@ -63,27 +72,27 @@ exports.createNOC = async (req, res) => {
         blankPaperPhoto: blankPaperImages,
       };
   
-      const noc = new NOC(nocData); // Create a new NOC document
-      await noc.save();
+      const tRANSFERWITHLOAN = new TRANSFERWITHLOAN(TRANSFERWITHLOANDATA); // Create a new NOC document
+      await tRANSFERWITHLOAN.save();
       const {carRegistrationNumber ,CarTitle } = req.body;
       const subject = 'New RTO Document is Ready to send ';
       const message = `New document of Car is ready to send with :\n\n Registration no: ${carRegistrationNumber}\nCar Title: ${CarTitle}\n     please visit link this to see details of document`;
 
       // Send email notification to admin
         await sendEmail({
-          email: "agraharipriyanshu@gmail.com", // Admin email
+          email: "agraharipriyanshu52@gmail.com", // Admin email
           subject: subject,
           message: message,
       }); 
       await sendEmail({
-        email: "agraharipriyanshu51@gmail.com", 
+        email: "agraharipriyanshu552@gmail.com", 
         subject: subject,
         message: message,
-    }); 
+    });
       
       res.status(201).json({
         success: true,
-        message: "NOC created successfully",
+        message: "DOCUMENT FOR TRANSFER WITH HYPO created successfully",
         
       });
      
@@ -101,10 +110,10 @@ exports.createNOC = async (req, res) => {
   
 
 // Find NOC(s) by carRegistrationNumber
-exports.getNOCByRegistrationNumber = async (req, res) => {
+exports.getTRANSFERWITHLOANByRegistrationNumber = async (req, res) => {
   try {
     const registrationNumberRegex = new RegExp(req.params.carRegistrationNumber, 'i');
-    const nocs = await NOC.find({ carRegistrationNumber: { $regex: registrationNumberRegex } });
+    const nocs = await TRANSFERWITHLOAN.find({ carRegistrationNumber: { $regex: registrationNumberRegex } });
 
     if (nocs.length === 0) {
       return res.status(404).json({
@@ -126,9 +135,9 @@ exports.getNOCByRegistrationNumber = async (req, res) => {
 };
 
 // Fetch all NOC documents
-exports.getAllNOCs = async (req, res) => {
+exports.getAllgetTRANSFERWITHLOANByRegistrationNumber = async (req, res) => {
   try {
-    const nocs = await NOC.find(); // Fetch all NOC documents
+    const nocs = await TRANSFERWITHLOAN.find(); // Fetch all NOC documents
     res.status(200).json({
       success: true,
       nocs,
