@@ -9,7 +9,7 @@ const upload = multer();  // Using default storage (temporary folder)
 
 // Route to create NOC with multiple image uploads
 router.post("/noc", upload.fields([
-  { name: "form", maxCount: 5 },
+  { name: "form28", maxCount: 5 },
   { name: "customerAadharCard", maxCount: 2 },
   { name: "blankPaperPhoto", maxCount: 3 },
   { name: "ownerAadharCard", maxCount: 2 },

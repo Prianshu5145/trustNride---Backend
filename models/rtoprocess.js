@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const nocSchema = new mongoose.Schema({
-  Form: {
+  Form28: {
     type: [String],
     required: true,
   },
@@ -24,6 +24,10 @@ const nocSchema = new mongoose.Schema({
   blankPaperPhoto: {
     type: [String],
     required: true, // URL or path to uploaded blank paper photo
+  },
+  CarTitle: {
+    type: String,
+    required: true,
   },
   agentName: {
     type: String,
