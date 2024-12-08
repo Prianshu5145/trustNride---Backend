@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const nocSchema = new mongoose.Schema({
-  Form28: {
+  form28: {
     type: [String],
     required: true,
   },
