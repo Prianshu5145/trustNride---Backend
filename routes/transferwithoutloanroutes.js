@@ -1,6 +1,6 @@
 const express = require("express");
 const multer = require("multer");
-const { createTRANSFERWITHLOAN,getTRANSFERWITHLOANByRegistrationNumber,getAllgetTRANSFERWITHLOANByRegistrationNumber} = require("../controllers/transferwithloan");
+const { createTRANSFERWITHOUTLOAN,getTRANSFERWITHOUTLOANByRegistrationNumber,getAllgetTRANSFERWITHOUTLOANByRegistrationNumber} = require("../controllers/transferwithoutloan");
 
 const router = express.Router();
 
@@ -8,23 +8,22 @@ const router = express.Router();
 const upload = multer();  // Using default storage (temporary folder)
 
 // Route to create NOC with multiple image uploads
-router.post("/transferwithloan", upload.fields([
+router.post("/transferwithoutloan", upload.fields([
   { name: "form28", maxCount: 5 },
   { name: "form29", maxCount: 5 },
   { name: "form30", maxCount: 5 },
-  { name: "form34", maxCount: 5 },
   { name: "noc", maxCount: 5 },
   { name: "customerAadharCard", maxCount: 3 },
   { name: "blankPaperPhoto", maxCount: 3 },
   { name: "ownerAadharCard", maxCount: 3 },
   { name: "ownerPhoto", maxCount: 1 },
   { name: "customerPhoto", maxCount: 1 },
-]), createTRANSFERWITHLOAN);
+]), createTRANSFERWITHOUTLOAN);
 
 // Route to get NOC by ID
-router.get("/transferwithloan/all", getAllgetTRANSFERWITHLOANByRegistrationNumber);
+router.get("/transferwithoutloan/all", getAllgetTRANSFERWITHOUTLOANByRegistrationNumber);
 
 // Route to get NOC by car registration number
-router.get('/transferwithloan/:carRegistrationNumber', getTRANSFERWITHLOANByRegistrationNumber);
+router.get('/transferwithoutloan/:carRegistrationNumber', getTRANSFERWITHOUTLOANByRegistrationNumber);
 
 module.exports = router;

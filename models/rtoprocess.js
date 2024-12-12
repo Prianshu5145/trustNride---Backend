@@ -22,8 +22,8 @@ const nocSchema = new mongoose.Schema({
     required: true, // URL or path to uploaded owner's photo
   },
   blankPaperPhoto: {
-    type: [String],
-    required: true, // URL or path to uploaded blank paper photo
+   type: [String],
+  default: []  // URL or path to uploaded blank paper photo
   },
   CarTitle: {
     type: String,

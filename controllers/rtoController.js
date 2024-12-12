@@ -1,4 +1,4 @@
-const cloudinary = require("../utils/cloudinary");
+const cloudinary = require("../utils/cloudinary2");
 const sharp = require("sharp");
 const NOC = require("../models/rtoprocess");
 const sendEmail = require('../utils/sendEmail');
@@ -43,7 +43,7 @@ const compressAndUploadToCloudinary = async (file) => {
 
 exports.createNOC = async (req, res) => {
     try {
-      console.log('h', req.files);
+      
       // Handle image uploads and compress each image before uploading to Cloudinary
       const formImages = req.files.form28 ? await Promise.all(req.files.form28.map(file => compressAndUploadToCloudinary(file))) : [];
       const customerAadharCardImages = req.files.customerAadharCard ? await Promise.all(req.files.customerAadharCard.map(file => compressAndUploadToCloudinary(file))) : [];
@@ -71,15 +71,11 @@ exports.createNOC = async (req, res) => {
 
       // Send email notification to admin
         await sendEmail({
-          email: "agraharipriyanshu@gmail.com", // Admin email
+          email: "trustnride51@gmail.com", // Admin email
           subject: subject,
           message: message,
       }); 
-      await sendEmail({
-        email: "agraharipriyanshu51@gmail.com", 
-        subject: subject,
-        message: message,
-    }); 
+      
       
       res.status(201).json({
         success: true,

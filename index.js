@@ -10,6 +10,7 @@ const reviewRoutes = require('./routes/reviewRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const rtoRoutes = require("./routes/rtoroutes");
 const transferRoutes = require("./routes/transferwithloanroutes");
+const transferRouteswithoutloan = require("./routes/transferwithoutloanroutes");
 dotenv.config(); // Load environment variables
 
 // Initialize express app
@@ -30,6 +31,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/contact', contactRoutes);
 app.use("/api/rto", rtoRoutes);
 app.use("/api/rtotransfer", transferRoutes);
+app.use("/api/rtotransferwithouthypo", transferRouteswithoutloan);
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
