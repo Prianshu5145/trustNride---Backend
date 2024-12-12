@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const TRANSFERWITHLOANSchema = new mongoose.Schema({
+const TRANSFERWITHOUTLOANSchema = new mongoose.Schema({
     form28: {
       type: [String],
       required: true,
@@ -13,14 +13,10 @@ const TRANSFERWITHLOANSchema = new mongoose.Schema({
       type: [String],
       required: true,
     },
-    form34: {
-      type: [String],
-      required: true,
-    },
     noc: {
-      type: [String],
-      default: [] // Default is an empty array if no value is provided
-    },
+  type: [String],
+  default: [] // Default is an empty array if no value is provided
+},
     customerAadharCard: {
       type: [String],
       required: true,
@@ -77,6 +73,6 @@ const TRANSFERWITHLOANSchema = new mongoose.Schema({
     },
   });
   
-  const TRANSFERWITHLOAN = mongoose.model("TRANSFERWITHLOAN",TRANSFERWITHLOANSchema );
+  const TRANSFERWITHOUTLOAN = mongoose.model("TRANSFERWITHOUTLOAN",TRANSFERWITHOUTLOANSchema );
   
-  module.exports = TRANSFERWITHLOAN;
+  module.exports = TRANSFERWITHOUTLOAN;
