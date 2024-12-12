@@ -1,6 +1,6 @@
 const express = require("express");
 const multer = require("multer");
-const { createTRANSFERWITHOUTLOAN,getTRANSFERWITHOUTLOANByRegistrationNumber,getAllgetTRANSFERWITHOUTLOANByRegistrationNumber} = require("../controllers/transferwithoutloan");
+const { createTRANSFERWITHOUTLOAN,getTRANSFERWITHOUTLOANByRegistrationNumber,getAllgetTRANSFERWITHOUTLOAN} = require("../controllers/transferwithoutloan");
 
 const router = express.Router();
 
@@ -13,6 +13,7 @@ router.post("/transferwithoutloan", upload.fields([
   { name: "form29", maxCount: 5 },
   { name: "form30", maxCount: 5 },
   { name: "noc", maxCount: 5 },
+  { name: "CarRc", maxCount: 5 },
   { name: "customerAadharCard", maxCount: 3 },
   { name: "blankPaperPhoto", maxCount: 3 },
   { name: "ownerAadharCard", maxCount: 3 },
@@ -21,7 +22,7 @@ router.post("/transferwithoutloan", upload.fields([
 ]), createTRANSFERWITHOUTLOAN);
 
 // Route to get NOC by ID
-router.get("/transferwithoutloan/all", getAllgetTRANSFERWITHOUTLOANByRegistrationNumber);
+router.get("/transferwithoutloan/all", getAllgetTRANSFERWITHOUTLOAN);
 
 // Route to get NOC by car registration number
 router.get('/transferwithoutloan/:carRegistrationNumber', getTRANSFERWITHOUTLOANByRegistrationNumber);
