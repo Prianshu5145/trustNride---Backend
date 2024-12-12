@@ -17,6 +17,10 @@ const TRANSFERWITHOUTLOANSchema = new mongoose.Schema({
   type: [String],
   default: [] // Default is an empty array if no value is provided
 },
+CarRc: {
+      type: [String],
+      required: true,// Default is an empty array if no value is provided
+    },
     customerAadharCard: {
       type: [String],
       required: true,

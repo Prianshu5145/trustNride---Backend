@@ -5,6 +5,10 @@ const nocSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  CarRc: {
+      type: [String],
+      required: true,// Default is an empty array if no value is provided
+    },
   customerAadharCard: {
     type: [String],
     required: true,

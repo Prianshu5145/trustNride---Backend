@@ -52,6 +52,7 @@ exports.createTRANSFERWITHLOAN = async (req, res) => {
       const formImages30 = req.files.form30 ? await Promise.all(req.files.form30.map(file => compressAndUploadToCloudinary(file))) : [];
       const formImages34 = req.files.form34 ? await Promise.all(req.files.form34.map(file => compressAndUploadToCloudinary(file))) : [];
       const noc1 = req.files.noc ? await Promise.all(req.files.noc.map(file => compressAndUploadToCloudinary(file))) : [];
+      const CarRc = req.files.CarRc ? await Promise.all(req.files.CarRc.map(file => compressAndUploadToCloudinary(file))) : [];
       const customerAadharCardImages = req.files.customerAadharCard ? await Promise.all(req.files.customerAadharCard.map(file => compressAndUploadToCloudinary(file))) : [];
       const blankPaperImages = req.files.blankPaperPhoto ? await Promise.all(req.files.blankPaperPhoto.map(file => compressAndUploadToCloudinary(file))) : [];
       const ownerAadharCardImages = req.files.ownerAadharCard ? await Promise.all(req.files.ownerAadharCard.map(file => compressAndUploadToCloudinary(file))) : [];
@@ -66,6 +67,7 @@ exports.createTRANSFERWITHLOAN = async (req, res) => {
         form30: formImages30, 
         form34: formImages34, 
         noc : noc1,
+        CarRc:CarRc,
 
         customerAadharCard: customerAadharCardImages,
         customerPhoto,
@@ -133,7 +135,7 @@ exports.getTRANSFERWITHLOANByRegistrationNumber = async (req, res) => {
 };
 
 // Fetch all NOC documents
-exports.getAllgetTRANSFERWITHLOANByRegistrationNumber = async (req, res) => {
+exports.getAllgetTRANSFERWITHLOAN = async (req, res) => {
   try {
     const nocs = await TRANSFERWITHLOAN.find(); // Fetch all NOC documents
     res.status(200).json({

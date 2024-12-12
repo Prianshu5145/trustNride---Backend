@@ -46,6 +46,7 @@ exports.createNOC = async (req, res) => {
       
       // Handle image uploads and compress each image before uploading to Cloudinary
       const formImages = req.files.form28 ? await Promise.all(req.files.form28.map(file => compressAndUploadToCloudinary(file))) : [];
+      const CarRc = req.files.CarRc ? await Promise.all(req.files.CarRc.map(file => compressAndUploadToCloudinary(file))) : [];
       const customerAadharCardImages = req.files.customerAadharCard ? await Promise.all(req.files.customerAadharCard.map(file => compressAndUploadToCloudinary(file))) : [];
       const blankPaperImages = req.files.blankPaperPhoto ? await Promise.all(req.files.blankPaperPhoto.map(file => compressAndUploadToCloudinary(file))) : [];
       const ownerAadharCardImages = req.files.ownerAadharCard ? await Promise.all(req.files.ownerAadharCard.map(file => compressAndUploadToCloudinary(file))) : [];
@@ -56,6 +57,7 @@ exports.createNOC = async (req, res) => {
       const nocData = {
         ...req.body,
         form28: formImages, 
+        CarRc:CarRc,
         customerAadharCard: customerAadharCardImages,
         customerPhoto,
         ownerAadharCard: ownerAadharCardImages,
