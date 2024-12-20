@@ -1,7 +1,7 @@
 const cloudinary = require("../utils/cloudinary2");
 const NOC = require("../models/rtoprocess");
 const sendEmail = require('../utils/sendEmail');
-
+const {sendMessage} = require('../utils/whatsapp');
 // Upload images to Cloudinary without compression
 const uploadToCloudinary = async (file) => {
   try {
@@ -121,12 +121,21 @@ exports.getNOCByRegistrationNumber = async (req, res) => {
 
 // Fetch all NOC documents
 exports.getAllNOCs = async (req, res) => {
-  try {
+ 
     const nocs = await NOC.find(); // Fetch all NOC documents
+   const h =  sendMessage('919119913441', {
+    images: [
+      'https://res.cloudinary.com/dztz5ltuq/image/upload/v1730357516/1729629559236_2_2_kdv48o.jpg',
+      
+    ]
+  });
+    try {
     res.status(200).json({
       success: true,
       nocs,
     });
+
+    
   } catch (error) {
     res.status(500).json({
       success: false,
