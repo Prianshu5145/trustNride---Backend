@@ -4,9 +4,12 @@ const qrcode = require('qrcode-terminal'); // Import qrcode-terminal
 
 // Initialize the client with Puppeteer launch options
 const client = new Client({
-  authStrategy: new LocalAuth(),
+  authStrategy: new LocalAuth({
+    clientId: "trustNrideClient",  // Optional: Assign a custom client ID
+    dataPath: process.env.WEBJS_AUTH_PATH || './.wwebjs_auth', // Persist session path for deployments
+  }),
   puppeteer: {
-    args: ['--no-sandbox', '--disable-setuid-sandbox'], // Add these arguments to Puppeteer
+    args: ['--no-sandbox', '--disable-setuid-sandbox'], // Add these arguments to Puppeteer for cloud environments
   },
 });
 
@@ -15,10 +18,13 @@ let isClientReady = false;
 // Event listener for QR code generation
 client.on('qr', (qr) => {
   console.log('QR Code received. Please scan it using WhatsApp:');
+  
+  // QR code URL for scanning in browser (useful for cloud environments)
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qr)}&size=300x300`;
   console.log(`Scan the QR code by visiting this link: ${qrUrl}`);
-  // Optionally, you can also generate the QR code directly in the terminal for local environments
-  qrcode.generate(qr, { small: true }); 
+  
+  // Optionally, generate the QR code directly in the terminal for local environments
+  qrcode.generate(qr, { small: true });
 });
 
 // Event listener when WhatsApp client is ready
@@ -36,7 +42,7 @@ client.on('authenticated', () => {
 client.on('disconnected', () => {
   isClientReady = false;
   console.log('WhatsApp client disconnected. Reconnecting...');
-  client.initialize();
+  client.initialize();  // Reinitialize the client if disconnected
 });
 
 // Function to download media from Cloudinary or any URL and convert it to MessageMedia
@@ -121,6 +127,8 @@ const sendMessage = async (phoneNumber, options) => {
   }
 };
 
+// Initialize the client
 client.initialize();
 
+// Export sendMessage function for external use
 module.exports = { sendMessage };
