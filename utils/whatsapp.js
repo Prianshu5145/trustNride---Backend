@@ -2,26 +2,37 @@ const { Client, MessageMedia, LocalAuth } = require('whatsapp-web.js');
 const axios = require('axios');
 const qrcode = require('qrcode-terminal'); // Import qrcode-terminal
 
+// Initialize the client with Puppeteer launch options
 const client = new Client({
   authStrategy: new LocalAuth(),
+  puppeteer: {
+    args: ['--no-sandbox', '--disable-setuid-sandbox'], // Add these arguments to Puppeteer
+  },
 });
 
 let isClientReady = false;
 
+// Event listener for QR code generation
 client.on('qr', (qr) => {
   console.log('QR Code received. Please scan it using WhatsApp:');
-  qrcode.generate(qr, { small: true }); // Generate and display the QR code
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qr)}&size=300x300`;
+  console.log(`Scan the QR code by visiting this link: ${qrUrl}`);
+  // Optionally, you can also generate the QR code directly in the terminal for local environments
+  qrcode.generate(qr, { small: true }); 
 });
 
+// Event listener when WhatsApp client is ready
 client.on('ready', () => {
   isClientReady = true;
   console.log('WhatsApp client is ready!');
 });
 
+// Event listener for authentication
 client.on('authenticated', () => {
   console.log('Authenticated! Session saved!');
 });
 
+// Event listener for disconnection
 client.on('disconnected', () => {
   isClientReady = false;
   console.log('WhatsApp client disconnected. Reconnecting...');
@@ -62,7 +73,6 @@ const sendMessage = async (phoneNumber, options) => {
     if (options.text && Array.isArray(options.text)) {
       for (const text of options.text) {
         await client.sendMessage(number, text);
-        
       }
     }
 
