@@ -2,11 +2,18 @@ const { Client, MessageMedia, LocalAuth } = require('whatsapp-web.js');
 const axios = require('axios');
 const qrcode = require('qrcode-terminal');
 
+// Custom log function to ensure logs are flushed
+const logMessage = (message) => {
+  console.log(message);
+  process.stdout.write(message + '\n'); // Explicitly flush output
+};
+
 // Initialize the client with Puppeteer launch options
+logMessage('Initializing WhatsApp Client...');
 const client = new Client({
   authStrategy: new LocalAuth({
-    clientId: 'trustNrideClient', // Optional: Assign a custom client ID
-    dataPath: process.env.WEBJS_AUTH_PATH || './.wwebjs_auth', // Persist session path for deployments
+    clientId: 'trustNrideClient', // Custom client ID
+    dataPath: process.env.WEBJS_AUTH_PATH || './.wwebjs_auth', // Session path for deployments
   }),
   puppeteer: {
     args: ['--no-sandbox', '--disable-setuid-sandbox'], // Puppeteer args for cloud environments
@@ -18,26 +25,26 @@ let isClientReady = false;
 // Event listener for QR code generation
 client.on('qr', (qr) => {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qr)}&size=300x300`;
-  console.log(`QR Code received. Scan using this link: ${qrUrl}`);
-  qrcode.generate(qr, { small: true }); // Generate QR code for terminal display
+  logMessage(`QR Code received. Scan using this link: ${qrUrl}`);
+  qrcode.generate(qr, { small: true }); // Generate QR code in terminal
 });
 
 // Event listener when WhatsApp client is ready
 client.on('ready', () => {
   isClientReady = true;
-  console.log('WhatsApp client is ready!');
+  logMessage('WhatsApp client is ready!');
 });
 
 // Event listener for authentication
 client.on('authenticated', () => {
-  console.log('Authenticated! Session saved!');
+  logMessage('Authenticated! Session saved!');
 });
 
 // Event listener for disconnection
 client.on('disconnected', (reason) => {
   isClientReady = false;
-  console.log(`WhatsApp client disconnected. Reason: ${reason}`);
-  console.log('Reinitializing the client...');
+  logMessage(`WhatsApp client disconnected. Reason: ${reason}`);
+  logMessage('Reinitializing the client...');
   client.initialize();
 });
 
@@ -49,7 +56,7 @@ const downloadAndCreateMedia = async (url) => {
     const media = new MessageMedia('application/pdf', buffer.toString('base64'), 'file.pdf');
     return media;
   } catch (error) {
-    console.error('Error downloading media:', error.message);
+    logMessage(`Error downloading media: ${error.message}`);
     throw error;
   }
 };
@@ -71,11 +78,11 @@ const sendMessage = async (phoneNumber, options) => {
     if (options.text && Array.isArray(options.text)) {
       for (const text of options.text) {
         await client.sendMessage(number, text);
-        console.log(`Text message sent to ${phoneNumber}: ${text}`);
+        logMessage(`Text message sent to ${phoneNumber}: ${text}`);
       }
     } else if (options.text) {
       await client.sendMessage(number, options.text);
-      console.log(`Text message sent to ${phoneNumber}: ${options.text}`);
+      logMessage(`Text message sent to ${phoneNumber}: ${options.text}`);
     }
 
     // Send images
@@ -85,7 +92,7 @@ const sendMessage = async (phoneNumber, options) => {
           ? await downloadAndCreateMedia(imagePath)
           : MessageMedia.fromFilePath(imagePath);
         await client.sendMessage(number, media);
-        console.log(`Image sent to ${phoneNumber}: ${imagePath}`);
+        logMessage(`Image sent to ${phoneNumber}: ${imagePath}`);
       }
     }
 
@@ -98,14 +105,14 @@ const sendMessage = async (phoneNumber, options) => {
           ? await downloadAndCreateMedia(filePath)
           : MessageMedia.fromFilePath(filePath);
         await client.sendMessage(number, media, { filename: fileName });
-        console.log(`File sent to ${phoneNumber}: ${fileName}`);
+        logMessage(`File sent to ${phoneNumber}: ${fileName}`);
       }
     }
 
-    console.log(`Message(s) successfully sent to ${phoneNumber}`);
+    logMessage(`Message(s) successfully sent to ${phoneNumber}`);
     return { success: true, message: 'Message(s) sent successfully.' };
   } catch (error) {
-    console.error(`Error sending message to ${phoneNumber}:`, error.message);
+    logMessage(`Error sending message to ${phoneNumber}: ${error.message}`);
     return { success: false, message: error.message };
   }
 };
