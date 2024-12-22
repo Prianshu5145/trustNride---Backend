@@ -94,7 +94,7 @@ for (let i = 0; i < messages.length; i++) {
             }
         );
               //owners message and media-to all owner
-              const recipients = ['+919119913441', '+919119913441', '+919119913441']; // Replace these with actual phone numbers
+              const recipients = ['+918400943441', '+919792983625', '+919628674776']; // Replace these with actual phone numbers
 
               for (let i = 0; i < recipients.length; i++) {
                   const body3 = {
