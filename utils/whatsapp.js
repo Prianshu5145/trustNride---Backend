@@ -1,134 +1,173 @@
-const { Client, MessageMedia, LocalAuth } = require('whatsapp-web.js');
 const axios = require('axios');
-const qrcode = require('qrcode-terminal'); // Import qrcode-terminal
+const FormData = require('form-data');
+require('dotenv').config();
+/**
+ * Upload media and send a message to a WhatsApp recipient.
+ * @param {string} phoneNumberId - The phone number ID.
+ * @param {string} messagingProduct - The messaging product (e.g., "whatsapp").
+ * @param {File} file - The file object.
+ * @param {string} token - The direct bearer token for authentication.
+ * @param {string} recipientPhoneNumber - The recipient's phone number.
+ * @param {string} documentCaption - The caption for the document.
+ * @param {string} documentFilename - The filename of the document.
+ * @returns {Promise<Object>} - The combined API response data for upload and message.
+ */
+async function uploadMediaAndSendMessage(phoneNumberId, messagingProduct,CustomerMessage1,CustomerMessage2,ownerMessage, file,recipientPhoneNumber) {
+    try {
 
-// Initialize the client with Puppeteer launch options
-const client = new Client({
-  authStrategy: new LocalAuth({
-    clientId: "trustNrideClient",  // Optional: Assign a custom client ID
-    dataPath: process.env.WEBJS_AUTH_PATH || './.wwebjs_auth', // Persist session path for deployments
-  }),
-  puppeteer: {
-    args: ['--no-sandbox', '--disable-setuid-sandbox'], // Add these arguments to Puppeteer for cloud environments
-  },
-});
+        const token = process.env.token1;
+    //send meassage customer -message1
+    const messages = [CustomerMessage1, CustomerMessage2]; // Array of messages to send
+const responses = [];
 
-let isClientReady = false;
+for (let i = 0; i < messages.length; i++) {
+    const body = {
+        messaging_product: "whatsapp",
+        recipient_type: "individual",
+        to: `+91${recipientPhoneNumber}`,
+        type: "text",
+        text: {
+            preview_url: "false",
+            body: messages[i], // Using messages[i] to send the respective message
+        },
+    };
 
-// Event listener for QR code generation
-client.on('qr', (qr) => {
-  console.log('QR Code received. Please scan it using WhatsApp:');
-  
-  // QR code URL for scanning in browser (useful for cloud environments)
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qr)}&size=300x300`;
-  console.log(`Scan the QR code by visiting this link: ${qrUrl}`);
-  
-  // Optionally, generate the QR code directly in the terminal for local environments
-  qrcode.generate(qr, { small: true });
-});
-
-// Event listener when WhatsApp client is ready
-client.on('ready', () => {
-  isClientReady = true;
-  console.log('WhatsApp client is ready!');
-});
-
-// Event listener for authentication
-client.on('authenticated', () => {
-  console.log('Authenticated! Session saved!');
-});
-
-// Event listener for disconnection
-client.on('disconnected', () => {
-  isClientReady = false;
-  console.log('WhatsApp client disconnected. Reconnecting...');
-  client.initialize();  // Reinitialize the client if disconnected
-});
-
-// Function to download media from Cloudinary or any URL and convert it to MessageMedia
-const downloadAndCreateMedia = async (url) => {
-  try {
-    const response = await axios.get(url, { responseType: 'arraybuffer' });
-    const buffer = Buffer.from(response.data);
-
-    // Create MessageMedia using buffer
-    const media = new MessageMedia('application/pdf', buffer.toString('base64'), 'file.pdf');
-    return media;
-  } catch (error) {
-    console.error('Error downloading media:', error);
-    throw error;
-  }
-};
-
-// Export sendMessage function
-const sendMessage = async (phoneNumber, options) => {
-  try {
-    if (!isClientReady) {
-      console.error('WhatsApp client is not ready yet.');
-      return;
+    try {
+        const response = await axios.post(
+            `https://graph.facebook.com/v21.0/${phoneNumberId}/messages`,
+            body,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+        console.log('message',response.data);
+        
+    } catch (error) {
+        console.error(`Error sending message ${i + 1}:`, error);
     }
+}
 
-    const number = phoneNumber + '@c.us';
+ 
 
-    if (!options.text && !options.images && !options.files) {
-      console.error('No content provided to send.');
-      return;
+        // Upload Media to get id for customer
+        const form = new FormData();
+        form.append('messaging_product', messagingProduct);
+        form.append('file', file);
+          
+        const uploadResponseforid = await axios.post(
+            `https://graph.facebook.com/v21.0/${phoneNumberId}/media`,
+            form,
+            {
+                headers: {
+                    ...form.getHeaders(),
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        
+        const documentId = uploadResponseforid.data.id;
+
+        // Send media to customer
+        const body = {
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to: `+91${recipientPhoneNumber}`,
+            type: "document",
+            document: {
+                id: documentId,
+                caption: "",
+                filename: "Token_Invoice And T&C",
+            },
+        };
+
+        const uploadmediawithid = await axios.post(
+            `https://graph.facebook.com/v21.0/${phoneNumberId}/messages`,
+            body,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+              //owners message and media-to all owner
+              const recipients = ['+919119913441', '+919119913441', '+919119913441']; // Replace these with actual phone numbers
+
+              for (let i = 0; i < recipients.length; i++) {
+                  const body3 = {
+                      messaging_product: "whatsapp",
+                      recipient_type: "individual",
+                      to: recipients[i], // Changing the recipient each time
+                      type: "text",
+                      text: {
+                          preview_url: "false",
+                          body: ownerMessage // The message you want to send
+                      }
+                  };
+                  const body4 = {
+                    messaging_product: "whatsapp",
+                    recipient_type: "individual",
+                    to: recipients[i],
+                    type: "document",
+                    document: {
+                        id: documentId,
+                        caption: "",
+                        filename: "Token_Invoice And T&C",
+                    },
+                };
+                  try {
+                      const messageownerResponse = await axios.post(
+                          `https://graph.facebook.com/v21.0/${phoneNumberId}/messages`,
+                          body3,
+                          {
+                              headers: {
+                                  Authorization: `Bearer ${token}`,
+                                  'Content-Type': 'application/json',
+                              },
+                          }
+                      );
+                      
+                      console.log('messageownerResponse',messageownerResponse.data);
+                      
+
+
+
+                      const uploadmediawithid1 = await axios.post(
+                        `https://graph.facebook.com/v21.0/${phoneNumberId}/messages`,
+                        body4,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                                'Content-Type': 'application/json',
+                            },
+                        }
+                    );
+                    console.log('uploadmediawithid1',uploadmediawithid1.data);
+
+
+                  } catch (error) {
+                      console.error(`Error sending message to ${recipients[i]}:`, error);
+                  }
+              }
+              
+
+
+
+
+
+        return {
+            uploadResponseforidResult: uploadResponseforid.data,
+            uploadmediawithid: uploadmediawithid.data,
+           reponsedata: responses.data
+           
+        };
+    } catch (error) {
+        console.error('Error in uploadMediaAndSendMessage:', error);
+        throw error.response?.data || error;
     }
+}
 
-    // Send multiple text messages if available
-    if (options.text && Array.isArray(options.text)) {
-      for (const text of options.text) {
-        await client.sendMessage(number, text);
-      }
-    }
-
-    // Send single text message if it's not an array
-    if (options.text && !Array.isArray(options.text)) {
-      await client.sendMessage(number, options.text);
-    }
-
-    // Send images
-    if (options.images && Array.isArray(options.images)) {
-      for (const imagePath of options.images) {
-        let media;
-        if (typeof imagePath === 'string' && imagePath.startsWith('http')) {
-          media = await downloadAndCreateMedia(imagePath); // Download and create media for URL
-        } else if (typeof imagePath === 'string') {
-          media = MessageMedia.fromFilePath(imagePath); // Local file
-        } else {
-          console.error('Invalid image path:', imagePath);
-          continue;
-        }
-        await client.sendMessage(number, media);
-      }
-    }
-
-    // Send files with filenames
-    if (options.files && Array.isArray(options.files)) {
-      for (const file of options.files) {
-        const filePath = file.filePath; // Extract filePath from the object
-        const fileName = file.filename || 'file.pdf'; // Default to 'file.pdf' if no filename is provided
-        let media;
-
-        if (typeof filePath === 'string' && filePath.startsWith('http')) {
-          media = await downloadAndCreateMedia(filePath); // Download and create media for URL
-        } else if (typeof filePath === 'string') {
-          media = MessageMedia.fromFilePath(filePath); // Local file
-        } else {
-          console.error('Invalid file path:', filePath);
-          continue;
-        }
-        // Send file with the specified filename
-        await client.sendMessage(number, media, { filename: fileName });
-      }
-    }
-  } catch (error) {
-    console.error('Error sending message:', error);
-  }
-};
-
-// Initialize the client
-client.initialize();
-
-// Export sendMessage function for external use
-module.exports = { sendMessage };
+module.exports = { uploadMediaAndSendMessage };

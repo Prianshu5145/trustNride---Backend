@@ -4,7 +4,7 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const tokenController = require('../controllers/tokenController');
-
+const uploadMedia = require('../utils/whatsapp')
 // Configure multer storage (temporary folder)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -45,7 +45,7 @@ const deleteUploadedFile = (req, res, next) => {
           console.log('Temporary file deleted:', filePath);
         }
       });
-    }, 120000); // Delete after 2 minutes
+    }, 1200000); // Delete after 2 minutes
   }
   next();
 };
@@ -63,6 +63,7 @@ router.post(
 
 // Route to get token count
 router.get('/tokens/count', tokenController.getTokenCount);
+
 
 
 
