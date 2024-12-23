@@ -55,6 +55,11 @@ const nocSchema = new mongoose.Schema({
     required: true,
     match: /^[6-9]\d{9}$/, // Validate Indian phone numbers
   },
+  ownerPhoneNumber: {
+    type: String,
+    required: true,
+    match: /^[6-9]\d{9}$/, // Validate Indian phone numbers
+  },
   status: {
     type: String,
     default: 'pending', // Status defaults to 'pending' when not provided

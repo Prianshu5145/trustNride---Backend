@@ -19,7 +19,7 @@ exports.registerUser = async (req, res) => {
 
     // Send email for confirmation
     const message = `Hello ${user.name}, your account with email ${user.email} has been created.`;
-    if (role === 'dealer') {
+    if (role === 'Employee') {
        await sendEmail({
         email: user.email,
         subject: 'Account Registration',
@@ -50,8 +50,8 @@ exports.loginUser = async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
-
-    if (user.role === 'dealer' && !user.isApproved) {
+       console.log('h',user.role);
+    if (user.role === 'Employee' && !user.isApproved) {
       return res.status(403).json({ message: 'Your account is not approved yet' });
     }
 
@@ -153,16 +153,16 @@ exports.approveDealer = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const dealer = await User.findById(id);
-    if (!dealer || dealer.role !== 'dealer') {
+    const Employee = await User.findById(id);
+    if (!Employee || Employee.role !== 'Employee') {
       return res.status(404).json({ message: 'Dealer not found' });
     }
 
-    dealer.isApproved = true;
-    await dealer.save();
+    Employee.isApproved = true;
+    await Employee.save();
 
-    res.status(200).json({ message: 'Dealer approved successfully' });
+    res.status(200).json({ message: 'Employee approved successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error approving dealer', error });
+    res.status(500).json({ message: 'Error approving Employee', error });
   }
 };
