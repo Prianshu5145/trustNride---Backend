@@ -1,7 +1,7 @@
 const cloudinary = require("../utils/cloudinary2");
 const NOC = require("../models/rtoprocess");
 const sendEmail = require('../utils/sendEmail');
-const {sendMessage} = require('../utils/whatsapp');
+const {sendTextMessages} = require('../utils/whatsapp');
 // Upload images to Cloudinary without compression
 const uploadToCloudinary = async (file) => {
   try {
@@ -33,6 +33,9 @@ const uploadToCloudinary = async (file) => {
 
 exports.createNOC = async (req, res) => {
   try {
+
+   const  {customerPhoneNumber}=req.body;
+
     // Handle image uploads and upload each image directly to Cloudinary
     const formImages = req.files.form28
       ? await Promise.all(req.files.form28.map(file => uploadToCloudinary(file)))
@@ -71,16 +74,34 @@ exports.createNOC = async (req, res) => {
     const noc = new NOC(nocData); // Create a new NOC document
     await noc.save();
 
-    const { carRegistrationNumber, CarTitle } = req.body;
-    const subject = "New RTO Document is Ready to send";
-    const message = `New document of Car is ready to send with:\n\n Registration no: ${carRegistrationNumber}\nCar Title: ${CarTitle}\nPlease visit the link to see details of the document.`;
+    //send message  to whatsapp
+    async function makeRequest() {
+      try {
+        const { carRegistrationNumber, CarTitle,ownerPhoneNumber,agentName,agentPhoneNumber,customerPhoneNumber,rtoName } = req.body;
+        const ownermessage=`*This is a notification from Trust N Ride.*\nA new RTO document has been sent for dispatch. Please review the details.\n *Details are:-*\n *CAR TITLE*:${CarTitle}\n*Car Registration number*:${carRegistrationNumber}\n*owner phone number*:${ownerPhoneNumber}\n*Agent name*:${agentName}\n*Agent Phone number*:${agentPhoneNumber}\n *Customer Phone Number*:${customerPhoneNumber}\n*Rto Name*:${rtoName}\nTap the link below to view the document\nhttps://www.trustnride.in/viewnoc\nThank you for your attention! - Team Trust N Ride`
+          const customermessage = `🚗 *Trust N Ride Update!*\n*Hi ${CarTitle} Owner,*\nYour car's transfer document is now dispatched! Be ready for the party peshi(Physical Verification) for the RC transfer of your ${CarTitle}.\n*Once completed, your holdback amount will be released.*\nStay tuned for the next steps!\n*- Team Trust N Ride.* ` 
+          const agentmessage = `🚗 *Trust N Ride Update!*\n*Dear RTO Agent,*\nWe are sending the new car papers for the RTO process(transfer/noc) of the Car with registration number: *${carRegistrationNumber}.*\nWe highly encourage you to process the paperwork quickly—your fast action will directly benefit you, as it opens the door for more future work with us.\n*You will soon receive the tracking ID for the dispatched document. Kindly receive it through courier.*\n*- Team Trust N Ride* `
+          const response = await sendTextMessages(ownerPhoneNumber,ownermessage,customermessage,agentmessage,agentPhoneNumber);
+  
+          console.log('Message  response:', response);
+      } catch (error) {
+          console.error('Error during request:', error);
+      }
+  }
+  
+  makeRequest(); 
 
+
+
+
+
+
+
+
+    
+    
     // Send email notification to admin
-    await sendEmail({
-      email: "trustnride51@gmail.com", // Admin email
-      subject: subject,
-      message: message,
-    });
+    
 
     res.status(201).json({
       success: true,
@@ -123,12 +144,7 @@ exports.getNOCByRegistrationNumber = async (req, res) => {
 exports.getAllNOCs = async (req, res) => {
  
     const nocs = await NOC.find(); // Fetch all NOC documents
-   const h =  sendMessage('919119913441', {
-    images: [
-      'https://res.cloudinary.com/dztz5ltuq/image/upload/v1730357516/1729629559236_2_2_kdv48o.jpg',
-      
-    ]
-  });
+   
     try {
     res.status(200).json({
       success: true,

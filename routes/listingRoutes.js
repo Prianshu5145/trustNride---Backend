@@ -31,13 +31,13 @@ router.post('/create', upload.fields([
 router.get('/alllisting', getAllListings);
 router.get('/Carlisting', AllListings);
 // Get seller's own listings
-router.get('/seller',isAuthenticated,checkUserRole(['dealer']) ,getSellerListings);
+router.get('/seller',isAuthenticated,checkUserRole(['Employee']) ,getSellerListings);
 
 // Update a listing (admins can update any listing, sellers can update their own)
-router.patch('/update/:id', isAuthenticated,checkUserRole(['dealer','admin']),updateListing);
+router.patch('/update/:id', isAuthenticated,checkUserRole(['Employee','admin']),updateListing);
 
 // Delete a listing (admins can delete any listing, sellers can delete their own)
-router.delete('/delete/:id',isAuthenticated,checkUserRole(['dealer', 'admin']), deleteListing);
+router.delete('/delete/:id',isAuthenticated,checkUserRole(['Employee', 'admin']), deleteListing);
 //
 router.get('/find/:id', getListingById);
 router.get('/assgnfind/:id', getassgnListingById);

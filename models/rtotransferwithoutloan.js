@@ -67,6 +67,11 @@ CarRc: {
       required: true,
       match: /^[6-9]\d{9}$/, 
     },
+    ownerPhoneNumber: {
+    type: String,
+    required: true,
+    match: /^[6-9]\d{9}$/, // Validate Indian phone numbers
+  },
     status: {
       type: String,
       default: 'pending', 
