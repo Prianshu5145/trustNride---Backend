@@ -206,9 +206,9 @@ async function sendTextMessages(ownerphonenumber, ownermessage, customermessage,
 
     // Manually declare recipients
     const recipients = [
-        { phoneNumber: '9119913441', message: ownermessage },
-        { phoneNumber: '9119913441', message: ownermessage },
-        { phoneNumber: '9119913441', message: ownermessage },
+        { phoneNumber: '8400943441', message: ownermessage },
+        { phoneNumber: '9792983625', message: ownermessage },
+        { phoneNumber: '9628674776', message: ownermessage },
         { phoneNumber: ownerphonenumber, message: customermessage },
         { phoneNumber: agentPhoneNumber, message: agentmessage },
     ];
