@@ -12,6 +12,7 @@ const rtoRoutes = require("./routes/rtoroutes");
 const transferRoutes = require("./routes/transferwithloanroutes");
 const transferRouteswithoutloan = require("./routes/transferwithoutloanroutes");
 const tokenRoutes = require("./routes/tokenroute");
+const Dealroute = require('./routes/dealroute');
 dotenv.config(); // Load environment variables
 
 // Initialize express app
@@ -34,6 +35,7 @@ app.use("/api/rto", rtoRoutes);
 app.use("/api/rtotransfer", transferRoutes);
 app.use("/api/rtotransferwithouthypo", transferRouteswithoutloan);
 app.use('/api/token', tokenRoutes);
+app.use('/api/deal', Dealroute);
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

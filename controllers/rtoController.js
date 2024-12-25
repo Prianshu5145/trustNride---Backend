@@ -1,7 +1,7 @@
 const cloudinary = require("../utils/cloudinary2");
 const NOC = require("../models/rtoprocess");
 const sendEmail = require('../utils/sendEmail');
-const {sendTextMessages} = require('../utils/whatsapp');
+const {sendTextMessages} = require('../utils/whatsapprto');
 // Upload images to Cloudinary without compression
 const uploadToCloudinary = async (file) => {
   try {

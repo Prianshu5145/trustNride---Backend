@@ -2,7 +2,7 @@ const cloudinary = require("../utils/cloudinary2");
 
 const TRANSFERWITHLOAN = require("../models/rtotransferwithloan");
 const sendEmail = require('../utils/sendEmail');
-const {sendTextMessages} = require('../utils/whatsapp');
+const {sendTextMessages} = require('../utils/whatsapprto');
 const uploadToCloudinary = async (file) => {
   try {
     const uploadResult = await new Promise((resolve, reject) => {
