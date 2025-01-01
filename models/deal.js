@@ -6,20 +6,20 @@ const dealSchema = new mongoose.Schema({
     amountPaidToSatish: { type: Number, required: true },
     amountPaidToSatishBy: {
         type: String,
-        enum: ['cash', 'inpersonalaccount', 'inpersonalaccount+cash', 'not applicable'],
+        enum: ['cash', 'inpersonalaccount', 'inpersonalaccount+cash', 'Does not Know','not applicable'],
         required: true,
     },
     amountPaidToPiyush: { type: Number, required: true },
     amountPaidToCompanyAccount: { type: Number, required: true },
     amountPaidToPiyushBy: {
         type: String,
-        enum: ['cash', 'inpersonalaccount', 'inpersonalaccount+cash', 'not applicable'],
+        enum: ['cash', 'inpersonalaccount', 'inpersonalaccount+cash', 'Does not Know','not applicable'],
         required: true,
     },
     amountPaidToOmprakash: { type: Number, required: true },
     amountPaidToOmprakashBy: {
         type: String,
-        enum: ['cash', 'inpersonalaccount', 'inpersonalaccount+cash', 'not applicable'],
+        enum: ['cash', 'inpersonalaccount', 'inpersonalaccount+cash','Does not Know', 'not applicable'],
         required: true,
     },
     CustomerPaymentMode:{type: String,

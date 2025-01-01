@@ -93,9 +93,9 @@ const bodytemplatemessage2customer  =    {
         to: `+91${recipientPhoneNumber}`,
         type: "template",
         template: {
-          name: "tokendetailsforcustomer",
+          name: "tokendetailsforcustomer1",
           language: {
-            code: "en_US"
+            code: "en"
           },
           components: [
             {
@@ -154,7 +154,7 @@ const bodytemplatemessage2customer  =    {
         console.log('message',response.data);
         
     } catch (error) {
-        console.error(`Error sending message ${i + 1}:`, error);
+        console.error(`Error sending message `, error);
     }
      
 
