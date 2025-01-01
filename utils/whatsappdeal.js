@@ -178,7 +178,7 @@ const bodytemplatemessage2customer  =    {
         
         
               //owners message and media-to all owner
-              const recipients = ['+919792983625', '+918400943441', '+919628674776']; // Replace these with actual phone numbers
+              const recipients = ['+918400943441', '+919792983625', '+919628674776']; // Replace these with actual phone numbers
 
               for (let i = 0; i < recipients.length; i++) {
                   const bodymessageownertemplate = {
