@@ -4,8 +4,7 @@ require('dotenv').config(); // Load environment variables from .env
 const sendEmail = async (options) => {
   // Create a transporter object using GoDaddy SMTP
   const transporter = nodemailer.createTransport({
-    host: 'gmail', // GoDaddy SMTP server
-    
+    service: 'gmail', // GoDaddy SMTP server
     auth: {
       user: process.env.EMAIL_USER, // Email from .env (your GoDaddy email)
       pass: process.env.EMAIL_PASS, // Email password from .env
@@ -14,7 +13,7 @@ const sendEmail = async (options) => {
 
   // Email options with a detailed HTML signature
   const mailOptions = {
-    from: "TRUSTNRIDE <agraharipriyanshu52@gmail.com>",
+    from: "agraharipriyanshu53@gmail.com",
     to: options.email,
     subject: options.subject,
     html: `
