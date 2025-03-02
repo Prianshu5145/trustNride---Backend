@@ -3,13 +3,14 @@ const sendEmail = require('../utils/sendEmail');
 
 // Booking controller function
 exports.bookInspection = async (req, res) => {
-    const { name, vehicleNumber, mobileNumber } = req.body;
+    const { name, vehicleNumber, mobileNumber,state, district, pincode,address } = req.body;
 
     // Save to database
     try {
-        const newBooking = new Booking({ name, vehicleNumber, mobileNumber });
+        const newBooking = new Booking({ name, vehicleNumber, mobileNumber, state, district, pincode,address });
         await newBooking.save();
 
+        
         // Prepare email details
         const subject = 'New Car Inspection Booking';
         const message = `You have a new booking:\n\nName: ${name}\nVehicle Number: ${vehicleNumber}\nMobile Number: ${mobileNumber}`;
