@@ -12,20 +12,7 @@ require('dotenv').config();
  * @param {string} documentFilename - The filename of the document.
  * @returns {Promise<Object>} - The combined API response data for upload and message.
  */
-async function uploadMediaAndSendMessage(phoneNumberId, messagingProduct,file,recipientPhoneNumber,carTitle,
-    carModel,
-    customerName,
-    customerMobile,
-    customerAddress,
-    customerEmail,
-    tokenAmount,
-    dateOfPaymentReceived,
-    paymentMode,
-    paymentTo,
-    dealDoneAmount,
-    fairMarketValue,
-    carRegistrationNumber,
-    loanOrCash) {
+async function uploadMediaAndSendMessagePurchaseDeal(phoneNumberId, messagingProduct,file,carTitle,customerName,challanAmount,dealDoneAmount,carRegistrationNumber,whatsappMobile) {
     try {
 
         const token = process.env.token1;
@@ -34,15 +21,32 @@ async function uploadMediaAndSendMessage(phoneNumberId, messagingProduct,file,re
         
         messaging_product: "whatsapp",
         recipient_type: "individual",
-        to: `+91${recipientPhoneNumber}`,
+        to: `+91${whatsappMobile}`,
         type: "template",
         template: {
-            name: "congransmessageoncarpurchase",
+            name: "purchasedealmessage1",
             language: {
                 code: "en_US"
             },
             components: [
-                
+                {
+                    type: "body",
+                    parameters: [
+                      {
+                        type: "text",
+                        text: customerName
+                      },
+                      {
+                        type: "text",
+                        text: carTitle
+                      },
+                      {
+                        type: "text",
+                        text: carRegistrationNumber
+                      }
+                      
+                    ]
+                  }
             ]
         
     }
@@ -90,12 +94,12 @@ try {
 
 const bodytemplatemessage2customer  =    {
         messaging_product: "whatsapp",
-        to: `+91${recipientPhoneNumber}`,
+        to: `+91${whatsappMobile}`,
         type: "template",
         template: {
-          name: "tokendetailsforcustomer1",
+          name: "purchasedealmessage2",
           language: {
-            code: "en"
+            code: "en_US"
           },
           components: [
             {
@@ -106,7 +110,7 @@ const bodytemplatemessage2customer  =    {
                   document: {
                    id: documentId,
               caption: "",
-              filename: "Token_Invoice_T&C"
+              filename: "Purchase_invoice_Agreement"
                   }
                 }
               ]
@@ -116,11 +120,15 @@ const bodytemplatemessage2customer  =    {
               parameters: [
                 {
                   type: "text",
+                  text: customerName
+                },
+                {
+                  type: "text",
                   text: carTitle
                 },
                 {
                   type: "text",
-                  text: carModel
+                  text: carRegistrationNumber
                 },
                 {
                   type: "text",
@@ -128,11 +136,7 @@ const bodytemplatemessage2customer  =    {
                 },
                 {
                   type: "text",
-                  text: tokenAmount
-                },
-                {
-                  type: "text",
-                  text: fairMarketValue
+                  text: challanAmount
                 }
               ]
             }
@@ -165,7 +169,7 @@ const bodytemplatemessage2customer  =    {
         
         
               //owners message and media-to all owner
-              const recipients = ['+918400943441', '+919792983625', '+917518885222']; // Replace these with actual phone numbers
+              const recipients = ['+918400943441', '+919792983625', '+917518885222','+919119913441']; // Replace these with actual phone numbers
 
               for (let i = 0; i < recipients.length; i++) {
                   const bodymessageownertemplate = {
@@ -173,9 +177,9 @@ const bodytemplatemessage2customer  =    {
                     to: recipients[i],
                     type: "template",
                     template: {
-                      name: "teamtokenmessage",
+                      name: "purchasedealownermessage",
                       language: {
-                        code: "en"
+                        code: "en_US"
                       },
                       components: [
                         {
@@ -186,7 +190,7 @@ const bodytemplatemessage2customer  =    {
                               document: {
                                id: documentId,
                           caption: "",
-                          filename: "Token_Invoice_T&C"
+                          filename: "Purchase_Invoice_Agreement"
                               }
                             }
                           ]
@@ -201,40 +205,8 @@ const bodytemplatemessage2customer  =    {
                             {
                               type: "text",
                               text: carRegistrationNumber
-                            },
-                            {
-                              type: "text",
-                              text: carModel
-                            },
-                            {
-                              type: "text",
-                              text: dealDoneAmount
-                            },
-                            {
-                              type: "text",
-                              text: tokenAmount
-                            },
-                            {
-                                type: "text",
-                                text:  paymentTo
-                              },
-
-                              {
-                                type: "text",
-                                text: paymentMode
-                              },
-                              {
-                                type: "text",
-                                text: customerName
-                              },
-                              {
-                                type: "text",
-                                text: customerAddress
-                              },
-                              {
-                                type: "text",
-                                text: loanOrCash
-                              },
+                            }
+                            
                               
                           ]
                         }
@@ -272,7 +244,7 @@ const bodytemplatemessage2customer  =    {
     }
 }
 
-module.exports = {uploadMediaAndSendMessage};
+module.exports = {uploadMediaAndSendMessagePurchaseDeal};
 
 
 
