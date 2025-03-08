@@ -13,7 +13,7 @@ const sendEmail = async (options) => {
     },
   });
 
-  // Email options with a detailed HTML signature
+  // Email options with attachment
   const mailOptions = {
     from: `"TRUST N RIDE" <team@trustnride.in>`, // Your email with business name
     to: options.email,
@@ -21,7 +21,7 @@ const sendEmail = async (options) => {
     html: `
       <p>${options.message}</p>
       <br>
-      <p>------------------------------------------------------------------</p>
+      <p>-------------------------------------------------------------------------------------------</p>
       <p style="font-size: 1.8em; font-weight: bold;">TRUST N RIDE</p> <!-- Larger size for TRUST N RIDE -->
       <p style="font-size: 1em; color: #0078D7;">TICK TOCK SOLD!!</p> <!-- Smaller size for TICK TOCK SOLD!! -->
       <img src="https://res.cloudinary.com/dztz5ltuq/image/upload/v1730227384/IMG-20241023-WA0010_p7ukjb.jpg" alt="TRUST N RIDE Logo" style="width:100px; height:auto; display:block; margin-top:10px;">
@@ -32,6 +32,14 @@ const sendEmail = async (options) => {
       <br>
       <p><em>This email and its contents are confidential.</em></p>
     `,
+    attachments: options.attachmentPath
+      ? [
+          {
+            filename: options.attachmentName || "document.pdf", // Default name if not provided
+            path: options.attachmentPath, // Path to the attached PDF file
+          },
+        ]
+      : [], // If no attachment is provided, it sends without attachment
   };
 
   // Send email

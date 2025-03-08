@@ -32,21 +32,7 @@ exports.submitTokenForm = async (req, res) => {
 
     let pdfUrl = null;
     
-    if (req.file) {
-      try {
-        // Upload the PDF file to Cloudinary
-        const result = await cloudinary.uploader.upload(req.file.path, {
-          resource_type: 'raw', // Ensure it's handled as a raw file
-          folder: 'trustnride/tokens', // Organize files into a specific folder
-        });
     
-        pdfUrl = result.secure_url; // Get the secure URL of the uploaded PDF
-        console.log('PDF uploaded successfully:', pdfUrl);
-      } catch (error) {
-        console.error('Error uploading PDF to Cloudinary:', error);
-        throw new Error('PDF upload failed'); // Handle the error gracefully
-      }
-    }
     
     // Use pdfUrl as needed
     
@@ -68,7 +54,7 @@ exports.submitTokenForm = async (req, res) => {
       fairMarketValue,
       carRegistrationNumber,
       loanOrCash,
-      pdfFileUrl: pdfUrl, // Save the Cloudinary PDF URL in the database
+       // Save the Cloudinary PDF URL in the database
     });
     
     
