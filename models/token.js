@@ -57,10 +57,7 @@ const tokenSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  pdfFileUrl: {
-    type: String,
-    required: true,
-  },
+  
   loanOrCash: {
     type: String,
     required: true,
