@@ -1,6 +1,7 @@
 const Deal = require('../models/deal');
 const {dealmessageandinvoice} = require('../utils/whatsappdeal');
 const fs = require('fs');
+const sendEmail = require('../utils/sendEmail');
 require('dotenv').config();
 // Create a new deal
 exports.createDeal = async (req, res) => {
@@ -27,6 +28,7 @@ exports.createDeal = async (req, res) => {
             customerWhatsappNumber,
             customerMobileNumber,
             customerName,
+            customerEmail,
             customerAddress,
         } = req.body;
 
@@ -51,6 +53,7 @@ exports.createDeal = async (req, res) => {
             carRegistrationNumber,
             customerWhatsappNumber,
             customerMobileNumber,
+            customerEmail,
             customerName,
             customerAddress,
         });
@@ -97,6 +100,29 @@ exports.createDeal = async (req, res) => {
         }
         
         makeRequest();
+
+        if (customerEmail.includes('@')) {
+            const message = `
+  <strong>Dear ${customerName},</strong>
+  <p>Great news! Your ${carTitle} (${carRegistrationNumber}) is ready for delivery. 🚗✨ We are thrilled to inform you that the payment at delivery has been successfully completed.</p>
+  <p>📑 Please find the attached PDF, which includes all payment details, delivery confirmation, and Agreement. Kindly review it before taking delivery.</p>
+  <p>We truly appreciate your trust in TRUST N RIDE and are excited to hand over your vehicle to you. If you have any questions or need assistance, feel free to reach out to us! 🚘💙</p>
+  <strong>Best Regards,</strong>
+  <br>
+  <strong>Team TRUST N RIDE</strong>
+`;
+
+      
+        
+              // Send the reset link via email (only to the user's email, not mobile)
+              await sendEmail({
+                email: customerEmail, // Email from the database
+                subject: `The Wait is Over! ${carTitle} Ready for Delivery 🚗💨`,
+                message,
+                attachmentPath: req.file.path, // Replace with actual file path
+                attachmentName: "Payment_Details_Agreement.pdf", // Optional, default is "document.pdf"
+              });
+        } 
 
         res.status(201).json({ message: 'Deal created successfully!', newDeal });
     } catch (error) {

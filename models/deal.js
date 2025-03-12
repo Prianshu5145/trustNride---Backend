@@ -41,6 +41,10 @@ const dealSchema = new mongoose.Schema({
     carRegistrationNumber: { type: String, required: true },
     customerWhatsappNumber: { type: String, required: true },
     customerMobileNumber: { type: String, required: true },
+    customerEmail: {
+    type: String,
+    required: false,
+  },
     customerName: { type: String, required: true },
     customerAddress: { type: String, required: true },
       // New field added
