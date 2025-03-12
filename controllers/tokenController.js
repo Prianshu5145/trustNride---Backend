@@ -2,6 +2,7 @@ const Token = require('../models/token'); // Assuming you have a Token model for
 const cloudinary = require("../utils/cloudinary2");
 const { sendMessage } = require('../utils/whatsapp');
 const { uploadMediaAndSendMessage } = require('../utils/whatsapp'); // Adjust the path as needed
+const sendEmail = require('../utils/sendEmail');
 const fs = require('fs');
 // Configure Cloudinary
 require('dotenv').config();
@@ -91,7 +92,30 @@ exports.submitTokenForm = async (req, res) => {
         }
     }
     
+   
     makeRequest(); 
+
+    if (customerEmail.includes('@')) {
+      const message = `
+  <strong>Dear ${customerName},</strong>
+  <p>Thank you for choosing TRUST N RIDE! We are pleased to inform you that we have successfully received your token payment for ${carTitle} (${carRegistrationNumber}). 🚀📑</p>
+  <p>Please find the attached PDF, which includes the payment details, token amount, and terms & conditions.</p>
+  <p>We appreciate your trust in TRUST N RIDE and look forward to completing this deal smoothly. If you have any questions, feel free to reach out to us! 🚘💙</p>
+  <strong>Best Regards,</strong>
+  <br>
+  <strong>Team TRUST N RIDE</strong>
+`;
+
+  
+        // Send the reset link via email (only to the user's email, not mobile)
+        await sendEmail({
+          email: customerEmail, // Email from the database
+          subject: `Get Ready to Ride: ${carTitle} Token Payment Received 🚗💨`,
+          message,
+          attachmentPath: req.file.path, // Replace with actual file path
+          attachmentName: "Token_Invoice_T&C.pdf", // Optional, default is "document.pdf"
+        });
+  } 
     return res.status(201).json({
       message: 'Token application submitted successfully!',
       token,
