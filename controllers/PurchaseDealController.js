@@ -96,8 +96,24 @@ exports.submitPurchaseDealForm = async (req, res) => {
                 console.error('Error during request:', error);
             }
         }    
-makeRequest();
-        const message = `Dear ${customerName},🎉\n Congratulations on finding the best deal for your car with TRUST N RIDE! We are excited to inform you that your ${carTitle} (${carRegistrationNumber}) has been successfully sold. 🚀\n📑 Please review the attached PDF, which includes all payment details, held amount details, agreement, and terms & conditions.\n\nWe appreciate your trust in TRUST N RIDE and look forward to assisting you again in the future! 🚘💙\n\nBest Regards,\nTeam TRUST N RIDE`;
+              makeRequest();   
+
+              const message = `
+              <html>
+                <body>
+                  <strong>Dear ${customerName},🎉</strong>
+                  <p>Congratulations on finding the best deal for your car with TRUST N RIDE! We are excited to inform you that your ${carTitle} (${carRegistrationNumber}) has been successfully sold. 🚀</p>
+                  <p>📑 Please review the attached PDF, which includes all payment details, held amount details, agreement, and terms & conditions.</p>
+                  <p>We appreciate your trust in TRUST N RIDE and look forward to assisting you again in the future! 🚘💙</p>
+                  <strong>Best Regards,</strong>
+                 <br>
+                  <strong>Team TRUST N RIDE</strong>
+                </body>
+              </html>
+              `;
+              
+              
+              
   
         // Send the reset link via email (only to the user's email, not mobile)
         await sendEmail({
@@ -105,7 +121,7 @@ makeRequest();
           subject: '🚗 TICK TOCK SOLD!!, Your Car is Successfully Sold with TRUST N RIDE',
           message,
           attachmentPath: req.file.path, // Replace with actual file path
-          attachmentName: "Purchase_Invoice_Agreement_T&C.pdf", // Optional, default is "document.pdf"
+          attachmentName: "Payment_Details_Agreement.pdf", // Optional, default is "document.pdf"
         });
     
     return res.status(201).json({

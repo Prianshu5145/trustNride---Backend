@@ -127,7 +127,7 @@ const bodytemplatemessage2customer  =    {
                     document: {
                      id: documentId,
                 caption: "",
-                filename: "Payment_Invoice_Agreement"
+                filename: "Payment_Details_Agreement"
                     }
                   }
                 ]
@@ -199,7 +199,7 @@ const bodytemplatemessage2customer  =    {
                               document: {
                                id: documentId,
                           caption: "",
-                          filename: "Payment_Invoice_Agreement"
+                          filename: "Payment_Details_Agreement"
                               }
                             }
                           ]
