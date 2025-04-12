@@ -10,7 +10,6 @@ const PurchaseDealSchema = new mongoose.Schema({
   AfterPickUpReceivableGD: { type: [String], required: true },
   BankACCNo: { type: String, required: true },
   BankIfsc: { type: String, required: true },
-  CashAmount: { type: Number, required: true },
   CxBankName: { type: String, required: true },
   CxBankPaidAmount: { type: Number, required: true },
   DueAmount: { type: Number, required: true },
