@@ -101,7 +101,7 @@ exports.createDeal = async (req, res) => {
         
         makeRequest();
 
-        if (customerEmail.includes('@')) {
+        
             const message = `
   <strong>Dear ${customerName},</strong>
   <p>Great news! Your ${carTitle} (${carRegistrationNumber}) is ready for delivery. 🚗✨ We are thrilled to inform you that the payment at delivery has been successfully completed.</p>
@@ -122,7 +122,7 @@ exports.createDeal = async (req, res) => {
                 attachmentPath: req.file.path, // Replace with actual file path
                 attachmentName: "Payment_Details_Agreement.pdf", // Optional, default is "document.pdf"
               });
-        } 
+        
 
         res.status(201).json({ message: 'Deal created successfully!', newDeal });
     } catch (error) {

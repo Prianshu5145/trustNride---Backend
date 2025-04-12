@@ -30,7 +30,7 @@ exports.submitPurchaseDealForm = async (req, res) => {
     LoanPaymentAmount,
     LoanPaidBy,
     LoanpaymentStatus,
-     CashAmount,
+     
      DueAmount,
      PickUpRecievedGD,
      AfterPickUpReceivableGD
@@ -68,7 +68,7 @@ exports.submitPurchaseDealForm = async (req, res) => {
     LoanPaymentAmount,
     LoanPaidBy,
     LoanpaymentStatus,
-     CashAmount,
+    
      DueAmount,
      PickUpRecievedGD,
      AfterPickUpReceivableGD,

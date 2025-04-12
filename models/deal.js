@@ -43,7 +43,7 @@ const dealSchema = new mongoose.Schema({
     customerMobileNumber: { type: String, required: true },
     customerEmail: {
     type: String,
-    required: false,
+    required: true,
   },
     customerName: { type: String, required: true },
     customerAddress: { type: String, required: true },
