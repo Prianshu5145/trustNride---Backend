@@ -117,7 +117,7 @@ exports.createDeal = async (req, res) => {
               // Send the reset link via email (only to the user's email, not mobile)
               await sendEmail({
                 email: customerEmail, // Email from the database
-                subject: `The Wait is Over! ${carTitle} Ready for Delivery 🚗💨`,
+                subject: `The Wait is Over! ${carTitle} Ready for Delivery 🚗`,
                 message,
                 attachmentPath: req.file.path, // Replace with actual file path
                 attachmentName: "Payment_Details_Agreement.pdf", // Optional, default is "document.pdf"
