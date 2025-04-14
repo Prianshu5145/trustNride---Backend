@@ -110,7 +110,7 @@ exports.submitTokenForm = async (req, res) => {
         // Send the reset link via email (only to the user's email, not mobile)
         await sendEmail({
           email: customerEmail, // Email from the database
-          subject: `Get Ready to Ride: ${carTitle} Token Payment Received 🚗💨`,
+          subject: `Get Ready to Ride: ${carTitle} Token Payment Done 🚗💨`,
           message,
           attachmentPath: req.file.path, // Replace with actual file path
           attachmentName: "Token_Invoice_T&C.pdf", // Optional, default is "document.pdf"
