@@ -5,11 +5,7 @@ const { uploadMediaAndSendMessagePurchaseDeal } = require('../utils/whatsappPurc
 const fs = require('fs');
 // Configure Cloudinary
 require('dotenv').config();
-<<<<<<< HEAD
 const fetch = require('node-fetch');
-=======
-
->>>>>>> 9cb1abbd6009f9f089e12e7bd25462ae26f1a087
 // Controller to handle the token form submission
 exports.submitPurchaseDealForm = async (req, res) => {
   try {
