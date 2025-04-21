@@ -59,7 +59,7 @@ router.post(
 );
 
 
-
+router.post('/verify', PurchaseDealController.verifyVehicle);
 
 // Route to get token count
 router.get('/PurchaseDeal/Count', PurchaseDealController.getPurchaseDealCount);

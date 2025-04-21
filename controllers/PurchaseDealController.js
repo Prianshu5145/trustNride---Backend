@@ -5,7 +5,7 @@ const { uploadMediaAndSendMessagePurchaseDeal } = require('../utils/whatsappPurc
 const fs = require('fs');
 // Configure Cloudinary
 require('dotenv').config();
-
+const fetch = require('node-fetch');
 // Controller to handle the token form submission
 exports.submitPurchaseDealForm = async (req, res) => {
   try {
@@ -161,5 +161,36 @@ exports.getPurchaseDealCount = async (req, res) => {
   }
 };
 
+exports.verifyVehicle = async(req,res)=>{
+  const { vehicleNumber } = req.body;
+
+  if (!vehicleNumber) {
+    return res.status(400).json({ error: 'Vehicle number is required' });
+  }
+
+  try {
+    const response = await fetch(process.env.API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'clientId': process.env.CLIENT_ID,
+        'secretKey': process.env.SECRET_KEY
+      },
+      body: JSON.stringify({ vehicleNumber })
+    });
+    
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: data?.message || 'Error from external API' });
+    }
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error('Backend Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 
