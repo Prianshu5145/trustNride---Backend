@@ -15,6 +15,7 @@ const tokenRoutes = require("./routes/tokenroute");
 const Dealroute = require('./routes/dealroute');
 const purchasedealroute = require('./routes/PurchaseDealRoutes');
 const purchasetokenroute = require('./routes/purchasetokenroutes');
+const dummytokenroute = require('./routes/dummytoken');
 dotenv.config(); // Load environment variables
 
 // Initialize express app
@@ -40,6 +41,7 @@ app.use('/api/token', tokenRoutes);
 app.use('/api/deal', Dealroute);
 app.use('/api/purchasetoken', purchasetokenroute);
 app.use('/api/purchasedeal', purchasedealroute);
+app.use('/api/dummytoken', dummytokenroute);
 
 // Start the server
 const PORT = process.env.PORT || 5000;
