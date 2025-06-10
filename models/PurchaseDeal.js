@@ -2,7 +2,12 @@ const mongoose = require("mongoose");
 
 const PurchaseDealSchema = new mongoose.Schema({
   carTitle: { type: String, required: true },
-  carModel: { type: String, required: true },
+  
+carModel: {
+  type: String,
+  required: false,
+  default: null
+},
   customerName: { type: String, required: true },
   customerMobile: { type: Number, required: true },
   whatsappMobile: { type: Number, required: true },
