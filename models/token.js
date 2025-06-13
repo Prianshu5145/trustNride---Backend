@@ -1,40 +1,22 @@
-// models/Token.js
 const mongoose = require('mongoose');
+
+// Helper to get current IST time (UTC + 5:30)
+function getISTDate() {
+  const currentUTC = new Date();
+  return new Date(currentUTC.getTime() + 330 * 60000);
+}
 
 // Define the schema for the token data
 const tokenSchema = new mongoose.Schema({
-  carTitle: {
-    type: String,
-    required: true,
-  },
-  carModel: {
-    type: String,
-    required: true,
-  },
-  customerName: {
-    type: String,
-    required: true,
-  },
-  customerMobile: {
-    type: String,
-    required: true,
-  },
-  whatsappMobile: {
-    type: String,
-    required: true,
-  },
-  customerAddress: {
-    type: String,
-    required: true,
-  },
-  customerEmail: {
-    type: String,
-    required: false,
-  },
-  tokenAmount: {
-    type: Number,
-    required: true,
-  },
+  carTitle: { type: String, required: true },
+  carModel: { type: String, required: true },
+  customerName: { type: String, required: true },
+  customerMobile: { type: String, required: true },
+  whatsappMobile: { type: String, required: true },
+  customerAddress: { type: String, required: true },
+  customerEmail: { type: String, required: false },
+
+  tokenAmount: { type: Number, required: true },
   paymentMode: {
     type: String,
     required: true,
@@ -45,19 +27,9 @@ const tokenSchema = new mongoose.Schema({
     required: true,
     enum: ['Piyush', 'Ramesh', 'Omprakash'],
   },
-  dealDoneAmount: {
-    type: Number,
-    required: true,
-  },
-  fairMarketValue: {
-    type: Number,
-    required: true,
-  },
-  carRegistrationNumber: {
-    type: String,
-    required: true,
-  },
-  
+  dealDoneAmount: { type: Number, required: true },
+  fairMarketValue: { type: Number, required: true },
+  carRegistrationNumber: { type: String, required: true },
   loanOrCash: {
     type: String,
     required: true,
@@ -66,7 +38,7 @@ const tokenSchema = new mongoose.Schema({
   dateOfPaymentReceived: {
     type: Date,
     required: true,
-    default: Date.now, // Sets the current date as default
+    default: getISTDate,
   },
 });
 

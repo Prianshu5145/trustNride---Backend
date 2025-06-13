@@ -17,7 +17,6 @@ const sendEmail = async (options) => {
   const mailOptions = {
     from: `"TRUST N RIDE" <team@trustnride.in>`, // Your GoDaddy email
     to: options.email,
-    cc: "team@trustnride.in",
     subject: options.subject,
     html: `
       <p>${options.message}</p>

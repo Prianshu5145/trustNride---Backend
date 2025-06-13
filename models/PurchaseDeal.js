@@ -1,13 +1,20 @@
 const mongoose = require("mongoose");
 
+// Helper to get IST time
+function getISTDate() {
+  const currentUTC = new Date();
+  const istTime = new Date(currentUTC.getTime() + 330 * 60000); // 330 minutes = 5.5 hours
+  return istTime;
+}
+
 const PurchaseDealSchema = new mongoose.Schema({
   carTitle: { type: String, required: true },
   
-carModel: {
-  type: String,
-  required: false,
-  default: null
-},
+  carModel: {
+    type: String,
+    required: false,
+    default: null
+  },
   customerName: { type: String, required: true },
   customerMobile: { type: Number, required: true },
   whatsappMobile: { type: Number, required: true },
@@ -30,6 +37,8 @@ carModel: {
   dealDoneAmount: { type: Number, required: true },
   tokenAmount: { type: Number, required: true },
 
+  // Created At field with IST time
+  createdAt: { type: Date, default: getISTDate }
 });
 
 const PurchaseDealModel = mongoose.model("PurchaseDealModel", PurchaseDealSchema);

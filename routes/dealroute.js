@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
-const {createDeal,getAllDeals,getDealById,updateDeal,deleteDeal,getdealCount} = require('../controllers/dealController');
+const {createDeal,getAllDeals,getDealById,updateDeal,deleteDeal,getdealCount,getDealSummaryByDateRange} = require('../controllers/dealController');
 const uploadMedia = require('../utils/whatsapp')
 // Configure multer storage (temporary folder)
 const storage = multer.diskStorage({
@@ -73,8 +73,7 @@ router.delete('/:id', deleteDeal);
 //route for deal count 
 
 
-
-
+router.post('/summary', getDealSummaryByDateRange);
 
 
 

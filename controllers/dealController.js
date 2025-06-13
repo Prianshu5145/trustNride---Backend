@@ -122,8 +122,6 @@ exports.createDeal = async (req, res) => {
                 attachmentPath: req.file.path, // Replace with actual file path
                 attachmentName: "Payment_Details_Agreement.pdf", // Optional, default is "document.pdf"
               });
-        
-
         res.status(201).json({ message: 'Deal created successfully!', newDeal });
     } catch (error) {
         res.status(500).json({ error: 'Error creating deal', message: error.message });
@@ -200,3 +198,54 @@ exports.deleteDeal = async (req, res) => {
       });
     }
   };
+
+ 
+
+exports.getDealSummaryByDateRange = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.body;
+
+    if (!startDate || !endDate) {
+      return res.status(400).json({ error: 'Please provide both startDate and endDate in YYYY-MM-DD format.' });
+    }
+
+    // Convert IST dates to UTC ranges
+    const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+
+    const startIST = new Date(`${startDate}T00:00:00`);
+    const endIST = new Date(`${endDate}T23:59:59.999`);
+
+    const startUTC = new Date(startIST.getTime() - IST_OFFSET_MS);
+    const endUTC = new Date(endIST.getTime() - IST_OFFSET_MS);
+
+    console.log("Searching from UTC:", startUTC.toISOString(), "to", endUTC.toISOString());
+
+    const deals = await Deal.find({
+      createdAt: {
+        $gte: startUTC,
+        $lte: endUTC
+      }
+    });
+
+    const result = deals.map(deal => ({
+      carRegistrationNumber: deal.carRegistrationNumber,
+      carTitle: deal.carTitle,
+      amountPaidToSatish: deal.amountPaidToSatish,
+      amountPaidToPiyush: deal.amountPaidToPiyush,
+      amountPaidToOmprakash: deal.amountPaidToOmprakash,
+      amountPaidToCompanyAccount: deal.amountPaidToCompanyAccount,
+      tokenAmount: deal.tokenAmount,
+      tokenAmountPaidTo: deal.tokenAmountPaidTo,
+      createdAt: deal.createdAt,
+    }));
+
+    res.json({ data: result });
+
+  } catch (error) {
+    console.error('Error fetching deal summary:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+
