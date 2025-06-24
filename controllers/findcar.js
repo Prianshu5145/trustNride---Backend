@@ -19,14 +19,15 @@ const getRandomHeader = () => {
     'Accept': Math.random() > 0.5 ? 'application/json,text/html' : 'application/json',
     'Accept-Language': Math.random() > 0.5 ? 'en-US,en;q=0.9' : 'en-GB,en;q=0.8',
     'Connection': Math.random() > 0.5 ? 'keep-alive' : 'close',
-    'Referer': 'https://www.spinny.com/',
-    'Origin': 'https://www.spinny.com'
+    'Referer': `${process.env.DATA_URL}`,
+    'Origin': `${process.env.DATA_URL}`
   };
 };
 
 exports.getFilteredCars = async (req, res) => {
-  let { model, make_year, variant } = req.body;
+  let { model, make_year, variant,fuelType,Transmission } = req.body;
 
+  
   if (!model || !make_year) {
     return res.status(400).json({ error: 'Please provide model and make_year' });
   }
@@ -35,49 +36,41 @@ exports.getFilteredCars = async (req, res) => {
   variant = variant?.toLowerCase();
 
   const cities = [
-    'delhi', 'noida', 'ghaziabad', 'faridabad', 'gurgaon',
-    'bangalore', 'hyderabad', 'mumbai', 'pune',
+    'delhi','bangalore', 'hyderabad', 'mumbai', 'pune', 'noida', 'ghaziabad', 'faridabad', 'gurgaon',
     'ahmedabad', 'chennai', 'kolkata', 'lucknow', 'jaipur',
-    'chandigarh', 'coimbatore', 'karnal', 'kochi', 'sonipat'
+    'chandigarh', 'coimbatore','kochi', 'sonipat'
   ];
 
   const filtered = [];
 
   try {
     for (const city of cities) {
-      let page = 1;
-      while (true) {
-        const url = `https://api.scraperapi.com/?api_key=${process.env.SCRAPERAPI_KEY}&country_code=in&url=` +
-          encodeURIComponent(`${process.env.DATA_URL}v3/api/listing/light?city=${city}` +
-          `&product_type=cars&category=used&min_year=${make_year}` +
-          `&model=${model}&page=${page}&availability=available`);
+      const page = 1;
 
-        const headers = getRandomHeader();
+      const url = `https://api.scraperapi.com/?api_key=${process.env.SCRAPERAPI_KEY}&country_code=in&url=` +
+        encodeURIComponent(`${process.env.DATA_URL}v3/api/listing/light?city=${city}` +
+        `&product_type=cars&category=used&min_year=${make_year}&fuel_type=${fuelType}&transmission=${Transmission}` +
+        `&model=${model}&page=${page}&availability=available`);
 
-        console.log(`Fetching city: ${city}, page: ${page}`);
-        const response = await axios.get(url, { headers });
-        const cars = response.data?.results || [];
+      const headers = getRandomHeader();
+      
+      const response = await axios.get(url, { headers });
+      const cars = response.data?.results || [];
 
-        if (cars.length === 0) break;
+      const matched = cars
+        .filter(car => {
+          const matchesYear = String(car.make_year) === String(make_year);
+          const matchesVariant = variant ? car.variant?.toLowerCase().includes(variant) : true;
+          return matchesYear && matchesVariant;
+        })
+        .map(car => ({
+          chassis_no: car.chassis_no,
+          make_year: car.make_year,
+          model: car.model,
+          variant: car.variant
+        }));
 
-        const matched = cars
-          .filter(car => {
-            const matchesYear = String(car.make_year) === String(make_year);
-            const matchesVariant = variant ? car.variant?.toLowerCase().includes(variant) : true;
-            return matchesYear && matchesVariant;
-          })
-          .map(car => ({
-            chassis_no: car.chassis_no,
-            make_year: car.make_year,
-            model: car.model,
-            variant: car.variant
-          }));
-
-        filtered.push(...matched);
-        page++;
-       await delay(1000 + Math.random() * 500); // Delay between 1000ms and 1500ms
-
-      }
+      filtered.push(...matched);
     }
 
     return res.json(filtered);
@@ -91,6 +84,7 @@ exports.getFilteredCars = async (req, res) => {
     return res.status(500).json({ error: 'Failed to fetch car data' });
   }
 };
+
 
 exports.getVehicleByChassis = async (req, res) => {
   const { chassis_no } = req.body;
